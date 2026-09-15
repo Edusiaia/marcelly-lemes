@@ -1,0 +1,566 @@
+/* =====================================================================
+   VARIÁVEIS DE COR  (TEMA ESCURO = PADRÃO)
+   ---------------------------------------------------------------------
+   Todas as cores ficam guardadas aqui, em "variáveis CSS".
+   Para mudar o visual do site inteiro, basta trocar estes valores.
+   Paleta em tons de azul: do azul quase preto ao azul acinzentado.
+   ===================================================================== */
+:root {
+  --cor-fundo: #021024;          /* fundo geral (azul mais escuro) */
+  --cor-superficie: #052659;     /* cartões, cabeçalho, acordeão */
+  --cor-destaque: #5483b3;       /* botões, links, detalhes */
+  --cor-texto-suave: #7da0ca;    /* textos secundários (azul acinzentado) */
+  --cor-texto: #e8eefb;          /* texto principal (branco levemente azul) */
+
+  --cor-borda: rgba(125, 160, 202, 0.20);   /* linhas e bordas sutis */
+  --cor-brilho: rgba(84, 131, 179, 0.35);   /* brilho azul suave */
+
+  --largura-maxima: 940px;       /* largura máxima do conteúdo */
+  --raio: 16px;                  /* arredondamento das bordas */
+  --transicao: 0.25s ease;       /* velocidade padrão das animações */
+}
+
+/* =====================================================================
+   TEMA CLARO
+   ---------------------------------------------------------------------
+   Quando o <html> recebe data-theme="light" (pelo botão de tema),
+   só reescrevemos as cores. O resto do CSS continua igual.
+   ===================================================================== */
+:root[data-theme="light"] {
+  --cor-fundo: #eef3fa;
+  --cor-superficie: #ffffff;
+  --cor-destaque: #052659;
+  --cor-texto-suave: #5a7aa5;
+  --cor-texto: #021024;
+
+  --cor-borda: rgba(5, 38, 89, 0.14);
+  --cor-brilho: rgba(84, 131, 179, 0.22);
+}
+
+/* =====================================================================
+   RESET BÁSICO
+   ---------------------------------------------------------------------
+   Tira margens/paddings padrão do navegador e faz padding + borda
+   contarem dentro da largura do elemento (box-sizing).
+   ===================================================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Rolagem suave ao clicar nos links de âncora (#sobre, #contato...) */
+html {
+  scroll-behavior: smooth;
+}
+
+/* =====================================================================
+   CORPO DA PÁGINA
+   ---------------------------------------------------------------------
+   O fundo tem, além da cor sólida, dois "brilhos" de luz azul bem
+   suaves (radial-gradient) que dão o toque futurista sem poluir.
+   ===================================================================== */
+body {
+  color: var(--cor-texto);
+  background-color: var(--cor-fundo);
+  background-image:
+    radial-gradient(60vw 40vw at 15% -10%, rgba(84, 131, 179, 0.18), transparent 60%),
+    radial-gradient(50vw 40vw at 100% 20%, rgba(125, 160, 202, 0.12), transparent 55%);
+  background-attachment: fixed;   /* os brilhos ficam parados ao rolar */
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.7;
+  transition: background-color var(--transicao), color var(--transicao);
+}
+
+/* Títulos usam a fonte Outfit, leve e com letras mais espaçadas */
+h1, h2, h3 {
+  font-family: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+}
+
+/* =====================================================================
+   CONTAINER  (centraliza o conteúdo e limita a largura)
+   ===================================================================== */
+.container {
+  width: 100%;
+  max-width: var(--largura-maxima);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* =====================================================================
+   CABEÇALHO / MENU
+   ===================================================================== */
+.cabecalho {
+  position: sticky;              /* gruda no topo ao rolar */
+  top: 0;
+  z-index: 20;
+  background-color: color-mix(in srgb, var(--cor-fundo) 80%, transparent);
+  backdrop-filter: blur(10px);   /* leve desfoque no que passa por trás */
+  border-bottom: 1px solid var(--cor-borda);
+  transition: background-color var(--transicao), border-color var(--transicao);
+}
+
+.cabecalho__conteudo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 66px;
+}
+
+.cabecalho__logo {
+  font-family: "Outfit", sans-serif;
+  font-weight: 500;
+  font-size: 1.05rem;
+  letter-spacing: 0.06em;
+  color: var(--cor-texto);
+  text-decoration: none;
+}
+
+.menu__lista {
+  list-style: none;              /* tira as bolinhas da lista */
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.menu__link {
+  color: var(--cor-texto-suave);
+  text-decoration: none;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  transition: color var(--transicao);
+}
+
+.menu__link:hover {
+  color: var(--cor-texto);
+}
+
+/* Botão de alternar tema (formato de "pílula") */
+.tema-botao {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: transparent;
+  border: 1px solid var(--cor-borda);
+  color: var(--cor-texto);
+  padding: 7px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  transition: border-color var(--transicao), color var(--transicao), background-color var(--transicao);
+}
+
+.tema-botao:hover {
+  border-color: var(--cor-destaque);
+  background-color: color-mix(in srgb, var(--cor-destaque) 14%, transparent);
+}
+
+/* =====================================================================
+   BOTÃO "TRÊS RISQUINHOS" (HAMBÚRGUER)
+   ---------------------------------------------------------------------
+   Escondido no computador; aparece só no celular (ver @media no fim).
+   ===================================================================== */
+.menu-botao {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.menu-botao__risco {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background-color: var(--cor-texto);
+  transition: transform var(--transicao), opacity var(--transicao);
+}
+
+/* Menu aberto: os riscos viram um "X" */
+.menu-botao.ativo .menu-botao__risco:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.menu-botao.ativo .menu-botao__risco:nth-child(2) {
+  opacity: 0;
+}
+.menu-botao.ativo .menu-botao__risco:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* =====================================================================
+   TOPO (HERO)
+   ===================================================================== */
+.hero {
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  padding-bottom: 80px;          /* espaço só embaixo; a capa fica no topo */
+}
+
+/* Faixa de capa no topo.
+   A imagem tem proporção 1600x595. Usando "aspect-ratio" igual à da
+   imagem, a faixa tem exatamente a altura certa para mostrar a foto
+   INTEIRA, sem cortar. O max-height evita que fique gigante em telas
+   muito largas. */
+.hero__capa {
+  width: 100%;
+  aspect-ratio: 1600 / 595;
+  max-height: 360px;
+  background-image:
+    linear-gradient(180deg, rgba(2, 16, 36, 0.10) 0%, rgba(2, 16, 36, 0.50) 68%, var(--cor-fundo) 100%),
+    url("img/capa.jpg");
+  background-position: center;
+  background-size: cover;
+}
+
+/* Conteúdo do topo: vem logo abaixo da capa, mas com margem negativa
+   para a foto de perfil "subir" e ficar por cima da faixa. */
+.hero__conteudo {
+  position: relative;
+  z-index: 1;
+  margin-top: -80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Foto de perfil redonda, com borda fina e brilho azul suave */
+.hero__foto {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;             /* recorta a foto sem distorcer */
+  object-position: center 20%;   /* mostra a parte de cima (o rosto), não o centro */
+  border: 2px solid rgba(232, 238, 251, 0.7);
+  box-shadow: 0 0 0 8px rgba(84, 131, 179, 0.12),
+              0 12px 40px rgba(2, 16, 36, 0.6);
+  margin-bottom: 28px;
+}
+
+.hero__titulo {
+  font-size: 2.6rem;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  /* Usa a cor de texto do tema (não mais branco fixo), porque o título
+     fica sobre o fundo da seção, não sobre a foto — no tema claro esse
+     fundo é claro, e um branco fixo ficaria invisível. */
+  color: var(--cor-texto);
+}
+
+.hero__cargo {
+  margin-top: 10px;
+  font-size: 0.95rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cor-texto-suave);
+}
+
+.hero__frase {
+  max-width: 480px;
+  margin: 22px auto 34px;
+  color: var(--cor-texto-suave);  /* acompanha o tema, em vez de um tom fixo */
+  font-style: italic;
+  font-size: 1.05rem;
+}
+
+/* =====================================================================
+   BOTÃO PRINCIPAL  (ex.: "Fale comigo")
+   ===================================================================== */
+.botao {
+  display: inline-block;
+  background-color: var(--cor-destaque);
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 14px 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(232, 238, 251, 0.25);
+  transition: transform var(--transicao), box-shadow var(--transicao);
+}
+
+.botao:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px var(--cor-brilho);
+}
+
+/* =====================================================================
+   SEÇÕES (Sobre, Habilidades, Contato)
+   ===================================================================== */
+.secao {
+  padding: 84px 0;
+  border-top: 1px solid var(--cor-borda);
+}
+
+/* Título com uma linha fina em degradê azul embaixo (toque futurista) */
+.secao__titulo {
+  position: relative;
+  font-size: 1.7rem;
+  font-weight: 400;
+  padding-bottom: 14px;
+  margin-bottom: 22px;
+}
+
+.secao__titulo::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 56px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--cor-destaque), transparent);
+}
+
+.secao__texto {
+  color: var(--cor-texto-suave);
+  margin-bottom: 16px;
+  max-width: 620px;
+}
+
+/* =====================================================================
+   ANIMAÇÃO DE ENTRADA
+   ---------------------------------------------------------------------
+   As seções com a classe "secao--animada" começam invisíveis e um
+   pouco abaixo. O JavaScript adiciona a classe "visivel" quando a
+   seção entra na tela, e aí ela sobe suavemente.
+   ===================================================================== */
+.secao--animada {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.secao--animada.visivel {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Se a pessoa preferir menos animações no sistema, respeitamos isso */
+@media (prefers-reduced-motion: reduce) {
+  .secao--animada {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* =====================================================================
+   ACORDEÃO DE HABILIDADES
+   ---------------------------------------------------------------------
+   Cada item tem um título (botão) e um painel (a lista de funções).
+   O painel abre com uma transição de altura. Um abre por vez.
+   ===================================================================== */
+.acordeao {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.acordeao__item {
+  background-color: color-mix(in srgb, var(--cor-superficie) 55%, transparent);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  overflow: hidden;
+  transition: border-color var(--transicao), box-shadow var(--transicao);
+}
+
+/* Item aberto ganha um leve brilho azul na borda */
+.acordeao__item.aberto {
+  border-color: var(--cor-destaque);
+  box-shadow: 0 0 28px var(--cor-brilho);
+}
+
+.acordeao__titulo {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--cor-texto);
+  font-family: "Outfit", sans-serif;
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+  padding: 22px 24px;
+  text-align: left;
+  transition: color var(--transicao);
+}
+
+.acordeao__titulo:hover {
+  color: var(--cor-destaque);
+}
+
+/* Seta: um pequeno "v" feito com duas bordas, que gira quando abre */
+.acordeao__seta {
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);           /* aponta para baixo */
+  transition: transform var(--transicao);
+  flex-shrink: 0;
+}
+
+.acordeao__item.aberto .acordeao__seta {
+  transform: rotate(-135deg);         /* aponta para cima quando aberto */
+}
+
+/* Painel: fechado tem altura 0; o JavaScript define a altura real ao abrir */
+.acordeao__painel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+
+.acordeao__lista {
+  list-style: none;
+  padding: 4px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.acordeao__lista li {
+  position: relative;
+  padding-left: 20px;
+  color: var(--cor-texto-suave);
+  line-height: 1.6;              /* respiro extra: os textos agora são mais longos */
+}
+
+/* Quando a função tem um "rótulo" em destaque (ex.: "Relacionamento com Clientes:") */
+.acordeao__lista li strong {
+  color: var(--cor-texto);
+  font-weight: 600;
+}
+
+/* Marcador em forma de "+" delicado antes de cada função */
+.acordeao__lista li::before {
+  content: "+";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--cor-destaque);
+}
+
+/* =====================================================================
+   CONTATO
+   ===================================================================== */
+.contato__lista {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 6px;
+}
+
+.contato__rotulo {
+  display: block;
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cor-texto-suave);
+  margin-bottom: 4px;
+}
+
+.contato__link {
+  color: var(--cor-texto);
+  text-decoration: none;
+  font-size: 1.05rem;
+  border-bottom: 1px solid var(--cor-destaque);
+  padding-bottom: 2px;
+  transition: color var(--transicao);
+}
+
+.contato__link:hover {
+  color: var(--cor-destaque);
+}
+
+/* =====================================================================
+   RODAPÉ
+   ===================================================================== */
+.rodape {
+  padding: 40px 0;
+  border-top: 1px solid var(--cor-borda);
+  text-align: center;
+  color: var(--cor-texto-suave);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+}
+
+/* =====================================================================
+   RESPONSIVO — CELULAR E TABLET (telas até 820px)
+   ---------------------------------------------------------------------
+   O menu horizontal some e vira o botão de três risquinhos.
+   A lista de links aparece só quando o menu está aberto.
+   ===================================================================== */
+@media (max-width: 820px) {
+  .menu-botao {
+    display: flex;
+  }
+
+  .menu__lista {
+    display: none;
+    position: absolute;
+    top: 66px;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    gap: 0;
+    background-color: var(--cor-fundo);
+    border-bottom: 1px solid var(--cor-borda);
+    padding: 8px 0 16px;
+  }
+
+  .menu__lista.aberto {
+    display: flex;
+  }
+
+  .menu__lista li {
+    width: 100%;
+  }
+
+  .menu__link {
+    display: block;
+    padding: 14px 24px;
+  }
+
+  .menu__lista li:last-child {
+    padding: 12px 24px 0;
+  }
+
+  .hero {
+    padding-bottom: 60px;
+  }
+
+  .hero__titulo {
+    font-size: 2rem;
+  }
+
+  .hero__foto {
+    width: 130px;
+    height: 130px;
+  }
+
+  /* No celular a foto sobe um pouco menos sobre a capa */
+  .hero__conteudo {
+    margin-top: -64px;
+  }
+
+  .secao {
+    padding: 60px 0;
+  }
+}
