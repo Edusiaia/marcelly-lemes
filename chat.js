@@ -1,24 +1,37 @@
 (function () {
-  const API = "https://agente-vendas.SEU-SUBDOMINIO.workers.dev"; // <- seu endereço do passo 6
+  const API = "https://agente-vendas.edusiaia.workers.dev";
   const historico = [];
 
   const css = document.createElement("style");
   css.textContent = `
+    /* Usa as mesmas cores do site (style.css), então acompanha o tema claro/escuro.
+       Texto sobre a cor de destaque usa a cor de fundo do site: contraste alto nos dois temas. */
+    #cv-btn,#cv-box{
+      --cv-fundo:var(--cor-fundo,#021024);--cv-sup:var(--cor-superficie,#052659);
+      --cv-dest:var(--cor-destaque,#5483b3);--cv-texto:var(--cor-texto,#e8eefb);
+      --cv-suave:var(--cor-texto-suave,#7da0ca);--cv-borda:var(--cor-borda,rgba(125,160,202,.2))}
     #cv-btn{position:fixed;bottom:20px;right:20px;width:60px;height:60px;border-radius:50%;
-      border:none;background:#1e3a8a;color:#fff;font-size:26px;cursor:pointer;
-      box-shadow:0 4px 12px rgba(0,0,0,.25);z-index:9999}
+      border:2px solid var(--cv-texto);background:var(--cv-dest);color:var(--cv-fundo);
+      font-size:26px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.35);z-index:9999}
     #cv-box{position:fixed;bottom:90px;right:20px;width:340px;max-width:calc(100vw - 40px);
-      height:460px;background:#fff;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.25);
-      display:none;flex-direction:column;overflow:hidden;z-index:9999;font-family:sans-serif}
+      height:460px;max-height:calc(100vh - 110px);background:var(--cv-sup);color:var(--cv-texto);
+      border:1px solid var(--cv-borda);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.35);
+      display:none;flex-direction:column;overflow:hidden;z-index:9999;
+      font-family:"Inter",-apple-system,"Segoe UI",Roboto,sans-serif}
     #cv-box.aberto{display:flex}
-    #cv-topo{background:#1e3a8a;color:#fff;padding:12px 16px;font-weight:bold}
+    #cv-topo{background:var(--cv-fundo);color:var(--cv-texto);padding:12px 16px;font-weight:600;
+      border-bottom:1px solid var(--cv-borda)}
     #cv-msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
-    .cv-m{padding:8px 12px;border-radius:10px;max-width:85%;line-height:1.4;font-size:14px;white-space:pre-wrap}
-    .cv-user{background:#1e3a8a;color:#fff;align-self:flex-end}
-    .cv-bot{background:#f1f1f1;color:#222;align-self:flex-start}
-    #cv-form{display:flex;border-top:1px solid #ddd}
-    #cv-input{flex:1;border:none;padding:12px;font-size:14px;outline:none}
-    #cv-enviar{border:none;background:#1e3a8a;color:#fff;padding:0 16px;cursor:pointer}
+    .cv-m{padding:8px 12px;border-radius:10px;max-width:85%;line-height:1.45;font-size:14px;white-space:pre-wrap}
+    .cv-user{background:var(--cv-dest);color:var(--cv-fundo);align-self:flex-end}
+    .cv-bot{background:var(--cv-fundo);color:var(--cv-texto);border:1px solid var(--cv-borda);align-self:flex-start}
+    #cv-form{display:flex;border-top:1px solid var(--cv-borda)}
+    #cv-input{flex:1;border:none;padding:12px;font:inherit;font-size:14px;outline:none;
+      background:var(--cv-fundo);color:var(--cv-texto)}
+    #cv-input::placeholder{color:var(--cv-suave);opacity:1}
+    #cv-input:focus{box-shadow:inset 0 0 0 2px var(--cv-dest)}
+    #cv-enviar{border:none;background:var(--cv-dest);color:var(--cv-fundo);font:inherit;
+      font-size:14px;font-weight:600;padding:0 16px;cursor:pointer}
     #cv-enviar:disabled{opacity:.6;cursor:wait}
   `;
   document.head.appendChild(css);
