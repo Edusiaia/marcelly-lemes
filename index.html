@@ -265,5 +265,68 @@
 
   <!-- Caminho relativo para o JavaScript -->
   <script src="script.js"></script>
+
+<!-- Assistente de Vendas com IA -->
+<style>
+  #av-btn{position:fixed;right:20px;bottom:20px;width:60px;height:60px;border-radius:50%;border:0;
+    background:#052659;color:#fff;font-size:26px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25);z-index:9999}
+  #av-box{position:fixed;right:20px;bottom:90px;width:340px;max-width:calc(100vw - 40px);height:460px;
+    background:#fff;border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,.25);display:none;flex-direction:column;
+    overflow:hidden;z-index:9999;font-family:system-ui,sans-serif}
+  #av-head{background:#021024;color:#fff;padding:12px 14px;font-weight:600}
+  #av-head small{display:block;font-weight:400;opacity:.8;font-size:11px}
+  #av-msgs{flex:1;overflow-y:auto;padding:12px;background:#f6f7fb}
+  .av-m{margin:6px 0;padding:9px 12px;border-radius:12px;max-width:85%;white-space:pre-wrap;
+    overflow-wrap:anywhere;font-size:14px;line-height:1.4}
+  .av-u{background:#052659;color:#fff;margin-left:auto}
+  .av-a{background:#fff;border:1px solid #e3e6ef}
+  .av-a a{color:#021024;font-weight:600}
+  #av-form{display:flex;border-top:1px solid #e3e6ef}
+  #av-in{flex:1;border:0;padding:12px;font-size:14px;outline:none}
+  #av-send{border:0;background:#021024;color:#fff;padding:0 16px;cursor:pointer}
+</style>
+<button id="av-btn" aria-label="Falar com a assistente">&#128172;</button>
+<div id="av-box">
+  <div id="av-head">Assistente de vendas<small>Atendimento por assistente virtual</small></div>
+  <div id="av-msgs"></div>
+  <form id="av-form"><input id="av-in" placeholder="Digite sua mensagem..." autocomplete="off">
+    <button id="av-send">Enviar</button></form>
+</div>
+<script>
+(() => {
+  const WORKER_URL = "https://assistente-vendas.edusiaia.workers.dev";
+  const hist = [];
+  const box = document.getElementById("av-box"), msgs = document.getElementById("av-msgs");
+  // Escapa o texto e transforma URLs em links clicáveis
+  const linkar = (t) => t
+    .replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]))
+    .replace(/https?:\/\/[^\s<]+[^\s<.,;:!?)]/g,
+      (u) => `<a href="${u}" target="_blank" rel="noopener">${u}</a>`);
+  const add = (txt, cls) => { const d = document.createElement("div"); d.className = "av-m " + cls;
+    if (cls === "av-a") d.innerHTML = linkar(txt); else d.textContent = txt;
+    msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight; return d; };
+  document.getElementById("av-btn").onclick = () => {
+    box.style.display = box.style.display === "flex" ? "none" : "flex";
+    if (!msgs.children.length) add("Olá! Como posso ajudar você hoje?", "av-a");
+  };
+  document.getElementById("av-form").onsubmit = async (ev) => {
+    ev.preventDefault();
+    const inp = document.getElementById("av-in"), txt = inp.value.trim();
+    if (!txt) return; inp.value = "";
+    add(txt, "av-u"); hist.push({ role: "user", content: txt });
+    const wait = add("digitando...", "av-a");
+    try {
+      const r = await fetch(WORKER_URL, { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: hist }) });
+      const data = await r.json();
+      const resp = data.reply || data.error || "Não consegui responder agora.";
+      wait.innerHTML = linkar(resp);
+      if (data.reply) hist.push({ role: "assistant", content: data.reply }); else hist.pop();
+    } catch { wait.textContent = "Falha de conexão. Tente novamente."; hist.pop(); }
+    msgs.scrollTop = msgs.scrollHeight;
+  };
+})();
+</script>
+
 </body>
 </html>
